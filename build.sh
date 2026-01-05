@@ -37,3 +37,15 @@ clang -shared \
     -framework AppKit \
     -framework QuartzCore \
     -o ripple-click-core.dylib
+
+clang -shared \
+    -target arm64-apple-macos14.1 \
+    -fobjc-arc \
+    -O3 \
+    -flto \
+    -fvisibility=hidden \
+    -I/Applications/Emacs.app/Contents/Resources/include \
+    neon-text.m \
+    -framework AppKit \
+    -framework QuartzCore \
+    -o neon-text-core.dylib

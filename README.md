@@ -1,5 +1,9 @@
 # animation.el
 
-<https://github.com/user-attachments/assets/8cbf8ca7-96cf-405c-9166-42bea9e029be>
+<https://github.com/user-attachments/assets/7a3b9f8d-2605-4894-93e2-5232e955917c>
 
-<https://github.com/user-attachments/assets/21ebd2f3-930f-4697-aa51-ee808a9e0223>
+<https://github.com/user-attachments/assets/a8314755-9016-4ea2-96dc-2ac9caedaaa7>
+
+<https://github.com/user-attachments/assets/88b0fa59-95bc-4216-9e3a-a94889e2e36b>
+
+<https://github.com/user-attachments/assets/d6239a5c-f5f8-40a0-bd80-ff43e8ca331d>
