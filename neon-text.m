@@ -41,9 +41,7 @@ static void create_neon_overlay() {
   neonLayer = glowLayer;
   [view.layer addSublayer:neonLayer];
 
-  if (!glowTimer) {
-    glowTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 repeats:YES block:^(NSTimer *timer) { animate_glow(timer); }];
-  }
+  if (!glowTimer) glowTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 repeats:YES block:^(NSTimer *timer) { animate_glow(timer); }];
 }
 
 static void remove_neon_overlay() {
