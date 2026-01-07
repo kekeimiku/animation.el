@@ -2,6 +2,14 @@
 
 Just for fun
 
+# Bracket content flash
+
+`bracket-content-flash-mode` flashes (brief highlight + blink) the content inside the innermost enclosing bracket pair when point enters/switches bracket scope.
+
+- Enable: `(bracket-content-flash-mode 1)`
+- Customize: `bracket-content-flash-duration`, `bracket-content-flash-blinks`, `bracket-content-flash-face`
+- Note: delimiter detection uses the syntax table, plus optional `<>` support via `bracket-content-flash-include-angle-brackets`.
+
 # Example
 
 <https://github.com/user-attachments/assets/7a3b9f8d-2605-4894-93e2-5232e955917c>
