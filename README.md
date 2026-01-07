@@ -14,6 +14,10 @@ An emacs animation library under development. For information on how to use it, 
 
 <https://github.com/user-attachments/assets/f4316542-60f1-4910-bb78-97a297d15703>
 
+<https://github.com/user-attachments/assets/9d97888c-db4b-4ced-b88d-84a25fe50069>
+
+<https://github.com/user-attachments/assets/718e2d23-32c4-440a-a953-dc1cbdaffd2a>
+
 <https://github.com/user-attachments/assets/d6239a5c-f5f8-40a0-bd80-ff43e8ca331d>
 
 <https://github.com/user-attachments/assets/88b0fa59-95bc-4216-9e3a-a94889e2e36b>

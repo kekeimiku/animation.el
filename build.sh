@@ -3,7 +3,6 @@
 set -euo pipefail
 
 clang -shared \
-    -target arm64-apple-macos14.1 \
     -fobjc-arc \
     -O3 \
     -flto \
@@ -15,7 +14,6 @@ clang -shared \
     -o particle-cursor-core.dylib
 
 clang -shared \
-    -target arm64-apple-macos14.1 \
     -fobjc-arc \
     -O3 \
     -flto \
@@ -27,7 +25,6 @@ clang -shared \
     -o buffer-transition-core.dylib
 
 clang -shared \
-    -target arm64-apple-macos14.1 \
     -fobjc-arc \
     -O3 \
     -flto \
@@ -39,7 +36,6 @@ clang -shared \
     -o ripple-click-core.dylib
 
 clang -shared \
-    -target arm64-apple-macos14.1 \
     -fobjc-arc \
     -O3 \
     -flto \
@@ -51,7 +47,6 @@ clang -shared \
     -o neon-text-core.dylib
 
 clang -shared \
-    -target arm64-apple-macos14.1 \
     -fobjc-arc \
     -O3 \
     -flto \
@@ -63,7 +58,6 @@ clang -shared \
     -o window-shake-core.dylib
 
 clang -shared \
-    -target arm64-apple-macos14.1 \
     -fobjc-arc \
     -O3 \
     -flto \
@@ -75,7 +69,6 @@ clang -shared \
     -o bracket-lightning-core.dylib
 
 clang -shared \
-    -target arm64-apple-macos14.1 \
     -fobjc-arc \
     -O3 \
     -flto \
@@ -87,3 +80,27 @@ clang -shared \
     -framework MetalKit \
     -framework QuartzCore \
     -o glitch-effect-core.dylib
+
+clang -shared \
+    -fobjc-arc \
+    -O3 \
+    -flto \
+    -fvisibility=hidden \
+    -I/Applications/Emacs.app/Contents/Resources/include \
+    -framework AppKit \
+    -framework Metal \
+    -framework MetalKit \
+    -framework QuartzCore \
+    -o shift-glitch-core.dylib shift-glitch.m
+
+clang -shared \
+    -fobjc-arc \
+    -O3 \
+    -flto \
+    -fvisibility=hidden \
+    -I/Applications/Emacs.app/Contents/Resources/include \
+    -framework AppKit \
+    -framework Metal \
+    -framework MetalKit \
+    -framework QuartzCore \
+    -o glow-text-core.dylib glow-text.m
