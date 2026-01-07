@@ -1,6 +1,6 @@
 # animation.el
 
-An emacs animation library under development. For information on how to use it, please refer to the *.el file attached to the project.
+Just for fun
 
 # Example
 
