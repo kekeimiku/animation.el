@@ -1,5 +1,6 @@
 **/.DS_Store
 *.dylib
+*.metallib
 .cache
 out
 compile_commands.json

@@ -77,15 +77,17 @@ static emacs_value neon_text_stop_emacs(emacs_env *env, ptrdiff_t nargs, emacs_v
 __attribute__((used, visibility("default"))) int emacs_module_init(struct emacs_runtime *runtime) {
   emacs_env *env = runtime->get_environment(runtime);
 
-  emacs_value render_func = env->make_function(env, 0, 0, neon_text_render_emacs, R"(Render neon glow effect for text.)", NULL);
-  emacs_value render_symbol = env->intern(env, "neon-text-render");
-  emacs_value render_args[] = {render_symbol, render_func};
-  env->funcall(env, env->intern(env, "defalias"), 2, render_args);
+  emacs_value defalias = env->intern(env, "defalias");
 
-  emacs_value stop_func = env->make_function(env, 0, 0, neon_text_stop_emacs, R"(Stop neon glow effect.)", NULL);
-  emacs_value stop_symbol = env->intern(env, "neon-text-stop");
-  emacs_value stop_args[] = {stop_symbol, stop_func};
-  env->funcall(env, env->intern(env, "defalias"), 2, stop_args);
+  emacs_value render_args[] = {
+      env->intern(env, "neon-text-render"),
+      env->make_function(env, 0, 0, neon_text_render_emacs, R"(Render neon glow effect for text.)", NULL)};
+  env->funcall(env, defalias, 2, render_args);
+
+  emacs_value stop_args[] = {
+      env->intern(env, "neon-text-stop"),
+      env->make_function(env, 0, 0, neon_text_stop_emacs, R"(Stop neon glow effect.)", NULL)};
+  env->funcall(env, defalias, 2, stop_args);
 
   return 0;
 }
