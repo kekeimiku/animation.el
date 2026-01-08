@@ -11,23 +11,9 @@
   "Face used to flash content between matching brackets."
   :group 'bracket-content-flash)
 
-(defcustom bracket-content-flash-duration 0.5
+(defcustom bracket-content-flash-duration 0.7
   "Total duration (in seconds) of the flash effect."
   :type 'number
-  :group 'bracket-content-flash)
-
-(defcustom bracket-content-flash-blinks 0
-  "How many times to blink during a flash.
-
-0 means do not blink; instead highlight once and fade out."
-  :type 'integer
-  :group 'bracket-content-flash)
-
-(defcustom bracket-content-flash-fade-steps 20
-  "How many steps to use for the fade-out animation.
-
-This is used when `bracket-content-flash-blinks' is 0."
-  :type 'integer
   :group 'bracket-content-flash)
 
 (defcustom bracket-content-flash-max-length 2000
@@ -63,15 +49,6 @@ Emacs is idle. Set this to 0 for immediate flashing."
 (defvar-local bracket-content-flash--last-point nil
   "Last point observed by `bracket-content-flash--post-command'.")
 
-(defvar-local bracket-content-flash--overlay nil
-  "Overlay used for flashing.")
-
-(defvar-local bracket-content-flash--timer nil
-  "Timer used for blinking/removing the overlay.")
-
-(defvar-local bracket-content-flash--blink-step 0
-  "Internal step counter for blink animation.")
-
 (defvar-local bracket-content-flash--defer-timer nil
   "Idle timer used to defer `bracket-content-flash--maybe-flash'.")
 
@@ -90,15 +67,8 @@ Stored as (ORIGINAL . MODIFIED-WITH-ANGLES).")
         bracket-content-flash--defer-point nil))
 
 (defun bracket-content-flash--cleanup ()
-  "Remove overlay/timers for current buffer."
-  (bracket-content-flash--cancel-defer-timer)
-  (when (timerp bracket-content-flash--timer)
-    (cancel-timer bracket-content-flash--timer))
-  (setq bracket-content-flash--timer nil
-        bracket-content-flash--blink-step 0)
-  (when (overlayp bracket-content-flash--overlay)
-    (delete-overlay bracket-content-flash--overlay))
-  (setq bracket-content-flash--overlay nil))
+  "Remove timers for current buffer."
+  (bracket-content-flash--cancel-defer-timer))
 
 (defun bracket-content-flash--before-open-delimiter-p ()
   (with-syntax-table (bracket-content-flash--syntax-table)
@@ -159,97 +129,42 @@ delimiter in the current syntax table)."
                              (<= (- end beg) bracket-content-flash-max-length))
                     (cons beg end))))))))))
 
-(defun bracket-content-flash--apply-face (face)
-  (when (overlayp bracket-content-flash--overlay)
-    (overlay-put bracket-content-flash--overlay 'face face)))
-
-(defun bracket-content-flash--blink-tick (total-steps)
-  (setq bracket-content-flash--blink-step (1+ bracket-content-flash--blink-step))
-  (cond
-   ((>= bracket-content-flash--blink-step total-steps)
-    (bracket-content-flash--cleanup))
-   ((cl-oddp bracket-content-flash--blink-step)
-    (bracket-content-flash--apply-face nil))
-   (t
-    (bracket-content-flash--apply-face 'bracket-content-flash-face))))
-
-(defun bracket-content-flash--face-attr (face attr)
-  (let ((v (face-attribute face attr nil t)))
-    (cond
-     ((null v) nil)
-     ((eq v 'unspecified) nil)
-     ((and (stringp v) (string-prefix-p "unspecified" v)) nil)
-     (t v))))
-
-(defun bracket-content-flash--rgb-to-hex (r g b)
-  (format "#%02x%02x%02x" (/ r 257) (/ g 257) (/ b 257)))
-
-(defun bracket-content-flash--blend-rgb (from to alpha)
-  (cl-labels ((mix (a b) (round (+ a (* alpha (- b a))))))
-    (list (mix (nth 0 from) (nth 0 to))
-          (mix (nth 1 from) (nth 1 to))
-          (mix (nth 2 from) (nth 2 to)))))
-
-(defun bracket-content-flash--fade-tick (steps from-rgb to-rgb fg)
-  (setq bracket-content-flash--blink-step (1+ bracket-content-flash--blink-step))
-  (cond
-   ((not (overlayp bracket-content-flash--overlay))
-    (bracket-content-flash--cleanup))
-   ((> bracket-content-flash--blink-step steps)
-    (bracket-content-flash--cleanup))
-   (t
-    (let* ((alpha (/ (float bracket-content-flash--blink-step) (float steps)))
-           (rgb (bracket-content-flash--blend-rgb from-rgb to-rgb alpha))
-           (bg (bracket-content-flash--rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb))))
-      (bracket-content-flash--apply-face
-       (append (list :inherit 'bracket-content-flash-face :background bg :extend t)
-               (when (stringp fg) (list :foreground fg))))))))
-
 (defun bracket-content-flash--flash (beg end)
-  (bracket-content-flash--cleanup)
-  (setq bracket-content-flash--overlay (make-overlay beg end nil t nil))
-  (overlay-put bracket-content-flash--overlay 'priority 1000)
-  (overlay-put bracket-content-flash--overlay 'evaporate t)
-  (bracket-content-flash--apply-face 'bracket-content-flash-face)
-  (let ((blinks (max 0 bracket-content-flash-blinks))
-        (buf (current-buffer)))
-    (if (<= blinks 0)
-        (let ((steps (max 1 bracket-content-flash-fade-steps))
-              (hbg (bracket-content-flash--face-attr 'bracket-content-flash-face :background))
-              (fg (bracket-content-flash--face-attr 'bracket-content-flash-face :foreground))
-              (bg (or (bracket-content-flash--face-attr 'default :background)
-                      (frame-parameter nil 'background-color))))
-          (if (and (require 'color nil t)
-                   (stringp hbg)
-                   (stringp bg)
-                   (ignore-errors (color-values hbg))
-                   (ignore-errors (color-values bg)))
-              (let* ((from-rgb (color-values hbg))
-                     (to-rgb (color-values bg))
-                     (interval (max 0.01 (/ (max 0.05 bracket-content-flash-duration)
-                                            (float (1+ steps))))))
-                (setq bracket-content-flash--blink-step 0)
-                (setq bracket-content-flash--timer
-                      (run-with-timer interval interval
-                                      (lambda ()
-                                        (when (buffer-live-p buf)
-                                          (with-current-buffer buf
-                                            (bracket-content-flash--fade-tick steps from-rgb to-rgb fg)))))))
-            (setq bracket-content-flash--timer
-                  (run-with-timer bracket-content-flash-duration nil
-                                  (lambda ()
-                                    (when (buffer-live-p buf)
-                                      (with-current-buffer buf
-                                        (bracket-content-flash--cleanup))))))))
-      (let* ((steps (* blinks 2))
-             (interval (max 0.01 (/ (max 0.01 bracket-content-flash-duration) steps))))
-        (setq bracket-content-flash--blink-step 0)
-        (setq bracket-content-flash--timer
-              (run-with-timer interval interval
-                              (lambda ()
-                                (when (buffer-live-p buf)
-                                  (with-current-buffer buf
-                                    (bracket-content-flash--blink-tick steps))))))))))
+  (when (and (display-graphic-p)
+             (functionp 'bracket-content-flash-draw-rect))
+    (let* ((face-bg (face-attribute 'bracket-content-flash-face :background nil t))
+           (default-bg (face-attribute 'region :background nil t))
+           (color (if (and (stringp face-bg) (not (string-prefix-p "unspecified" face-bg)))
+                      face-bg
+                    (if (and (stringp default-bg) (not (string-prefix-p "unspecified" default-bg)))
+                        default-bg
+                      "#FFFF00"))) ; Fallback yellow
+           (rgb (color-name-to-rgb color))
+           (edges (window-inside-pixel-edges))
+           (win-left (nth 0 edges))
+           (win-top (nth 1 edges)))
+      
+      (save-excursion
+        (goto-char beg)
+        (let ((current-line (line-number-at-pos))
+              (end-line (line-number-at-pos end)))
+          (while (<= current-line end-line)
+            (let* ((line-end-pos (min end (line-end-position)))
+                   (p1 (posn-at-point (point)))
+                   (p2 (posn-at-point line-end-pos)))
+              (when (and p1 p2)
+                (let* ((x1 (+ (car (posn-x-y p1)) win-left))
+                       (y1 (+ (cdr (posn-x-y p1)) win-top))
+                       (x2 (+ (car (posn-x-y p2)) win-left))
+                       (h (line-pixel-height))
+                       (w (- x2 x1)))
+                  (when (> w 0)
+                    (apply 'bracket-content-flash-draw-rect
+                           (list x1 y1 w h
+                                 (nth 0 rgb) (nth 1 rgb) (nth 2 rgb)
+                                 bracket-content-flash-duration))))))
+            (forward-line 1)
+            (setq current-line (1+ current-line))))))))
 
 (defun bracket-content-flash--maybe-flash ()
   (let ((range (bracket-content-flash--current-range)))
@@ -290,6 +205,8 @@ Angle brackets `<>` are supported by default via
   :global t
   (if bracket-content-flash-mode
       (progn
+        (unless (functionp 'bracket-content-flash-draw-rect)
+          (load "bracket-content-flash-core" t t))
         (dolist (buf (buffer-list))
           (with-current-buffer buf
             (setq bracket-content-flash--last-point (point))))
