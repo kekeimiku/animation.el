@@ -4,11 +4,20 @@ Just for fun
 
 # Bracket content flash
 
-`bracket-content-flash-mode` flashes (brief highlight + blink) the content inside the innermost enclosing bracket pair when point enters/switches bracket scope.
+`bracket-content-flash-mode` flashes (brief highlight then fade out) the content inside a bracket pair when point is immediately before the opening delimiter.
 
 - Enable: `(bracket-content-flash-mode 1)`
-- Customize: `bracket-content-flash-duration`, `bracket-content-flash-blinks`, `bracket-content-flash-face`
+- Customize: `bracket-content-flash-duration`, `bracket-content-flash-face`, `bracket-content-flash-blinks`, `bracket-content-flash-fade-steps`
 - Note: delimiter detection uses the syntax table, plus optional `<>` support via `bracket-content-flash-include-angle-brackets`.
+- Blink vs fade:
+  - Default is fade out (`bracket-content-flash-blinks` = 0).
+  - To enable blinking, set `bracket-content-flash-blinks` to a positive integer (e.g. 2).
+- Troubleshooting:
+  - It ignores strings/comments (by design).
+  - It triggers when point is right before an opening delimiter (e.g. `(`/`[`/`{`/`<` when enabled).
+  - It triggers on point movement/typing that leaves point right before an opening delimiter.
+  - If you "see nothing", try increasing `bracket-content-flash-duration` and making `bracket-content-flash-face` more visible.
+  - If it feels laggy while moving the cursor, set `bracket-content-flash-idle-delay` to a small value (e.g. 0.05–0.1) so it only flashes when Emacs is idle; default is 0 for immediate flashing.
 
 # Example
 
