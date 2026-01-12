@@ -41,17 +41,6 @@ clang -shared \
     -flto \
     -fvisibility=hidden \
     -I/Applications/Emacs.app/Contents/Resources/include \
-    neon-text.m \
-    -framework AppKit \
-    -framework QuartzCore \
-    -o neon-text-core.dylib
-
-clang -shared \
-    -fobjc-arc \
-    -O3 \
-    -flto \
-    -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
     window-shake.m \
     -framework AppKit \
     -framework QuartzCore \
@@ -128,3 +117,12 @@ clang -shared \
     -framework CoreGraphics \
     fishhook.c text-glow.c \
     -o text-glow-core.dylib
+
+clang -shared \
+    -O3 \
+    -flto \
+    -fvisibility=hidden \
+    -I/Applications/Emacs.app/Contents/Resources/include \
+    -framework CoreGraphics \
+    fishhook.c text-rainbow.c \
+    -o text-rainbow-core.dylib
