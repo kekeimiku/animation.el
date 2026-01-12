@@ -5,8 +5,17 @@
 __attribute__((used, visibility("default"))) int plugin_is_GPL_compatible;
 
 static bool glow_enabled = false;
-
+static CGColorRef last_fill_color = NULL;
 static void (*original_CGContextShowGlyphsAtPositions)(CGContextRef, const CGGlyph *, const CGPoint *, size_t) = NULL;
+static void (*original_CGContextSetFillColorWithColor)(CGContextRef, CGColorRef) = NULL;
+
+static void hooked_CGContextSetFillColorWithColor(CGContextRef c, CGColorRef color) {
+  if (last_fill_color) CGColorRelease(last_fill_color);
+
+  last_fill_color = color ? CGColorRetain(color) : NULL;
+
+  if (original_CGContextSetFillColorWithColor) original_CGContextSetFillColorWithColor(c, color);
+}
 
 static void hooked_CGContextShowGlyphsAtPositions(CGContextRef c, const CGGlyph *glyphs, const CGPoint *positions, size_t count) {
   if (glow_enabled && c) {
@@ -14,13 +23,8 @@ static void hooked_CGContextShowGlyphsAtPositions(CGContextRef c, const CGGlyph 
 
     CGSize offset = CGSizeMake(0, 0);
 
-    CGColorRef shadowColor = CGColorCreateGenericRGB(0.2, 0.7, 1.0, 0.9);
-    CGContextSetShadowWithColor(c, offset, 15.0, shadowColor);
-    CGColorRelease(shadowColor);
-
-    if (original_CGContextShowGlyphsAtPositions) {
-      original_CGContextShowGlyphsAtPositions(c, glyphs, positions, count);
-    }
+    if (last_fill_color) CGContextSetShadowWithColor(c, offset, 5.0, last_fill_color);
+    if (original_CGContextShowGlyphsAtPositions) original_CGContextShowGlyphsAtPositions(c, glyphs, positions, count);
 
     CGContextRestoreGState(c);
   } else {
@@ -31,13 +35,17 @@ static void hooked_CGContextShowGlyphsAtPositions(CGContextRef c, const CGGlyph 
 static void install_hooks() {
   if (original_CGContextShowGlyphsAtPositions) return;
 
-  struct rebinding rebindings[1];
+  struct rebinding rebindings[2];
 
   rebindings[0].name = "CGContextShowGlyphsAtPositions";
   rebindings[0].replacement = hooked_CGContextShowGlyphsAtPositions;
   rebindings[0].replaced = (void **)&original_CGContextShowGlyphsAtPositions;
 
-  rebind_symbols(rebindings, 1);
+  rebindings[1].name = "CGContextSetFillColorWithColor";
+  rebindings[1].replacement = hooked_CGContextSetFillColorWithColor;
+  rebindings[1].replaced = (void **)&original_CGContextSetFillColorWithColor;
+
+  rebind_symbols(rebindings, 2);
 }
 
 static void enable_text_glow() {
