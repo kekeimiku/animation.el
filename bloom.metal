@@ -1,6 +1,6 @@
 //
-//  glow-text.metal
-//  Text Glow Effect using Golden Spiral Sampling
+//  bloom.metal
+//  Text bloom Effect using Golden Spiral Sampling
 //
 //  Source: https://gist.github.com/qwerasd205/c3da6c610c8ffe17d6d2d3cc7068f17f
 //  Credits: https://github.com/qwerasd205
@@ -58,7 +58,7 @@ vertex VertexOut vertex_main(uint vertexID [[vertex_id]],
   return out;
 }
 
-fragment half4 glow_text_effect(VertexOut in [[stage_in]],
+fragment half4 bloom_effect(VertexOut in [[stage_in]],
                                 texture2d<half> sourceTexture [[texture(0)]]) {
   constexpr sampler textureSampler(mag_filter::linear, min_filter::linear, address::clamp_to_edge);
   

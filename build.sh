@@ -103,4 +103,4 @@ clang -shared \
     -framework Metal \
     -framework MetalKit \
     -framework QuartzCore \
-    -o glow-text-core.dylib glow-text.m
+    -o bloom-core.dylib bloom.m

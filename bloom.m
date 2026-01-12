@@ -7,7 +7,7 @@
 
 __attribute__((used, visibility("default"))) int plugin_is_GPL_compatible;
 
-static MTKView *glowTextView = nil;
+static MTKView *gBloomView = nil;
 
 typedef struct {
   float position[2];
@@ -23,7 +23,7 @@ static const Vertex quadVertices[] = {
     {{-1.0f, 1.0f}, {0.0f, 0.0f}},
 };
 
-@interface GlowTextView : MTKView <MTKViewDelegate>
+@interface bloomView : MTKView <MTKViewDelegate>
 @property(nonatomic, strong) id<MTLTexture> sourceTexture;
 @property(nonatomic, strong) id<MTLCommandQueue> commandQueue;
 @property(nonatomic, strong) id<MTLRenderPipelineState> pipelineState;
@@ -36,7 +36,7 @@ static const Vertex quadVertices[] = {
 - (BOOL)setupMetal;
 @end
 
-@implementation GlowTextView
+@implementation bloomView
 
 - (void)drawInMTKView:(MTKView *)view {
   if (!self.isCapturing) {
@@ -114,21 +114,21 @@ static const Vertex quadVertices[] = {
   if (!device) return NO;
 
   self.commandQueue = [device newCommandQueue];
-  self.captureQueue = dispatch_queue_create("com.glowtext.capture", DISPATCH_QUEUE_SERIAL);
+  self.captureQueue = dispatch_queue_create("com.bloom.capture", DISPATCH_QUEUE_SERIAL);
   self.isCapturing = NO;
 
   Dl_info info;
   if (!dladdr((void *)&plugin_is_GPL_compatible, &info)) return NO;
 
   NSString *libPath = [NSString stringWithUTF8String:info.dli_fname];
-  NSString *metallibPath = [[libPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"glow-text.metallib"];
+  NSString *metallibPath = [[libPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"bloom.metallib"];
   if (![[NSFileManager defaultManager] fileExistsAtPath:metallibPath]) return NO;
 
   id<MTLLibrary> library = [device newLibraryWithURL:[NSURL fileURLWithPath:metallibPath] error:nil];
   if (!library) return NO;
 
   id<MTLFunction> vertexFunction = [library newFunctionWithName:@"vertex_main"];
-  id<MTLFunction> fragmentFunction = [library newFunctionWithName:@"glow_text_effect"];
+  id<MTLFunction> fragmentFunction = [library newFunctionWithName:@"bloom_effect"];
 
   if (!fragmentFunction || !vertexFunction) return NO;
 
@@ -147,49 +147,49 @@ static const Vertex quadVertices[] = {
 
 @end
 
-static void removeGlowTextOverlay() {
-  if (glowTextView) {
-    [glowTextView removeFromSuperview];
-    glowTextView = nil;
+static void removebloomOverlay() {
+  if (gBloomView) {
+    [gBloomView removeFromSuperview];
+    gBloomView = nil;
   }
 }
 
-static void createGlowTextOverlay() {
-  if (glowTextView) return;
+static void createbloomOverlay() {
+  if (gBloomView) return;
 
   NSView *contentView = [NSApp mainWindow].contentView;
-  glowTextView = [[GlowTextView alloc] initWithFrame:contentView.bounds device:MTLCreateSystemDefaultDevice()];
+  gBloomView = [[bloomView alloc] initWithFrame:contentView.bounds device:MTLCreateSystemDefaultDevice()];
 
-  if (![(GlowTextView *)glowTextView setupMetal]) {
-    glowTextView = nil;
+  if (![(bloomView *)gBloomView setupMetal]) {
+    gBloomView = nil;
     return;
   }
 
-  GlowTextView *glowView = (GlowTextView *)glowTextView;
-  glowView.delegate = glowView;
+  bloomView *view = (bloomView *)gBloomView;
+  view.delegate = view;
 
-  glowView.enableSetNeedsDisplay = NO;
-  glowView.paused = NO;
-  glowView.preferredFramesPerSecond = 60;
-  glowView.clearColor = MTLClearColorMake(0, 0, 0, 0);
-  glowView.framebufferOnly = YES;
-  glowView.layer.opaque = NO;
-  glowView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+  view.enableSetNeedsDisplay = NO;
+  view.paused = NO;
+  view.preferredFramesPerSecond = 60;
+  view.clearColor = MTLClearColorMake(0, 0, 0, 0);
+  view.framebufferOnly = YES;
+  view.layer.opaque = NO;
+  view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
-  [contentView addSubview:glowView positioned:NSWindowAbove relativeTo:nil];
+  [contentView addSubview:gBloomView positioned:NSWindowAbove relativeTo:nil];
 }
 
-static emacs_value glow_text_render_emacs(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data) {
+static emacs_value bloom_render_emacs(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data) {
   dispatch_async(dispatch_get_main_queue(), ^{
-    createGlowTextOverlay();
+    createbloomOverlay();
   });
 
   return env->intern(env, "nil");
 }
 
-static emacs_value glow_text_cleanup_emacs(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data) {
+static emacs_value bloom_cleanup_emacs(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data) {
   dispatch_async(dispatch_get_main_queue(), ^{
-    removeGlowTextOverlay();
+    removebloomOverlay();
   });
 
   return env->intern(env, "nil");
@@ -201,13 +201,13 @@ __attribute__((used, visibility("default"))) int emacs_module_init(struct emacs_
   emacs_value defalias = env->intern(env, "defalias");
 
   emacs_value render_args[] = {
-      env->intern(env, "glow-text-render"),
-      env->make_function(env, 0, 0, glow_text_render_emacs, R"(Render text glow effect using Metal shader.)", NULL)};
+      env->intern(env, "bloom-render"),
+      env->make_function(env, 0, 0, bloom_render_emacs, R"(Render text bloom effect using Metal shader.)", NULL)};
   env->funcall(env, defalias, 2, render_args);
 
   emacs_value cleanup_args[] = {
-      env->intern(env, "glow-text-cleanup"),
-      env->make_function(env, 0, 0, glow_text_cleanup_emacs, R"(Stop and clean up text glow effect.)", NULL)};
+      env->intern(env, "bloom-cleanup"),
+      env->make_function(env, 0, 0, bloom_cleanup_emacs, R"(Stop and clean up text bloom effect.)", NULL)};
   env->funcall(env, defalias, 2, cleanup_args);
 
   return 0;

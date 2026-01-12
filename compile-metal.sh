@@ -8,5 +8,5 @@ xcrun -sdk macosx metallib glitch_effect.air -o glitch_effect.metallib
 xcrun -sdk macosx metal -c shift-glitch.metal -o shift-glitch.air
 xcrun -sdk macosx metallib shift-glitch.air -o shift-glitch.metallib
 
-xcrun -sdk macosx metal -c glow-text.metal -o glow-text.air
-xcrun -sdk macosx metallib glow-text.air -o glow-text.metallib
+xcrun -sdk macosx metal -c bloom.metal -o bloom.air
+xcrun -sdk macosx metallib bloom.air -o bloom.metallib
