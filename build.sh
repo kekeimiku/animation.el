@@ -87,11 +87,12 @@ clang -shared \
     -flto \
     -fvisibility=hidden \
     -I/Applications/Emacs.app/Contents/Resources/include \
+    shift-glitch.m \
     -framework AppKit \
     -framework Metal \
     -framework MetalKit \
     -framework QuartzCore \
-    -o shift-glitch-core.dylib shift-glitch.m
+    -o shift-glitch-core.dylib
 
 clang -shared \
     -fobjc-arc \
@@ -99,8 +100,31 @@ clang -shared \
     -flto \
     -fvisibility=hidden \
     -I/Applications/Emacs.app/Contents/Resources/include \
+    bloom.m \
     -framework AppKit \
     -framework Metal \
     -framework MetalKit \
     -framework QuartzCore \
-    -o bloom-core.dylib bloom.m
+    -o bloom-core.dylib
+
+clang -shared \
+    -fobjc-arc \
+    -O3 \
+    -flto \
+    -fvisibility=hidden \
+    -I/Applications/Emacs.app/Contents/Resources/include \
+    glow-rgbsplit-twitchy.m \
+    -framework AppKit \
+    -framework Metal \
+    -framework MetalKit \
+    -framework QuartzCore \
+    -o glow-rgbsplit-twitchy-core.dylib
+
+clang -shared \
+    -O3 \
+    -flto \
+    -fvisibility=hidden \
+    -I/Applications/Emacs.app/Contents/Resources/include \
+    -framework CoreGraphics \
+    fishhook.c text-glow.c \
+    -o text-glow-core.dylib

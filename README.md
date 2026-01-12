@@ -2,6 +2,8 @@
 
 Just for fun
 
+It is recommended to enable only one mode at a time and restart Emacs. Enabling multiple modes simultaneously in the current implementation may lead to unexpected results.
+
 # Example
 
 <https://github.com/user-attachments/assets/7a3b9f8d-2605-4894-93e2-5232e955917c>
@@ -21,3 +23,5 @@ Just for fun
 <https://github.com/user-attachments/assets/d6239a5c-f5f8-40a0-bd80-ff43e8ca331d>
 
 <https://github.com/user-attachments/assets/88b0fa59-95bc-4216-9e3a-a94889e2e36b>
+
+And more...
