@@ -18,8 +18,8 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
     buffer-transition.m \
+    -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
     -framework QuartzCore \
     -o buffer-transition-core.dylib
@@ -29,8 +29,8 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
     ripple-click.m \
+    -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
     -framework QuartzCore \
     -o ripple-click-core.dylib
@@ -40,8 +40,8 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
     window-shake.m \
+    -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
     -framework QuartzCore \
     -o window-shake-core.dylib
@@ -51,78 +51,39 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
     draw-lightning.m \
+    -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
     -framework QuartzCore \
     -o bracket-lightning-core.dylib
 
 clang -shared \
-    -fobjc-arc \
     -O3 \
     -flto \
     -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
-    glitch-effect.m \
-    -framework AppKit \
-    -framework Metal \
-    -framework MetalKit \
-    -framework QuartzCore \
-    -o glitch-effect-core.dylib
-
-clang -shared \
-    -fobjc-arc \
-    -O3 \
-    -flto \
-    -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
-    shift-glitch.m \
-    -framework AppKit \
-    -framework Metal \
-    -framework MetalKit \
-    -framework QuartzCore \
-    -o shift-glitch-core.dylib
-
-clang -shared \
-    -fobjc-arc \
-    -O3 \
-    -flto \
-    -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
-    bloom.m \
-    -framework AppKit \
-    -framework Metal \
-    -framework MetalKit \
-    -framework QuartzCore \
-    -o bloom-core.dylib
-
-clang -shared \
-    -fobjc-arc \
-    -O3 \
-    -flto \
-    -fvisibility=hidden \
-    -I/Applications/Emacs.app/Contents/Resources/include \
-    glow-rgbsplit-twitchy.m \
-    -framework AppKit \
-    -framework Metal \
-    -framework MetalKit \
-    -framework QuartzCore \
-    -o glow-rgbsplit-twitchy-core.dylib
-
-clang -shared \
-    -O3 \
-    -flto \
-    -fvisibility=hidden \
+    fishhook.c text-glow.c \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework CoreGraphics \
-    fishhook.c text-glow.c \
     -o text-glow-core.dylib
 
 clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    fishhook.c text-rainbow.c \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework CoreGraphics \
-    fishhook.c text-rainbow.c \
     -o text-rainbow-core.dylib
+
+clang -shared \
+    -fobjc-arc \
+    -O3 \
+    -flto \
+    -fvisibility=hidden \
+    metal-loader.m \
+    -I/Applications/Emacs.app/Contents/Resources/include \
+    -framework AppKit \
+    -framework Metal \
+    -framework MetalKit \
+    -framework QuartzCore \
+    -o metal-loader-core.dylib

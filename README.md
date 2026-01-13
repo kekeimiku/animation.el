@@ -4,6 +4,28 @@ Just for fun
 
 It is recommended to enable only one mode at a time and restart Emacs. Enabling multiple modes simultaneously in the current implementation may lead to unexpected results.
 
+```shell
+bash build.sh
+bash compile-metal.sh
+```
+
+```lisp
+(add-to-list 'load-path "/Users/keke/Code/Github/animation.el/")
+(require 'metal-loader)
+(metal-loader-load "/Users/keke/Code/Github/animation.el/glitch-effect.metallib")
+
+;; (require 'ripple-click)
+;; (ripple-click-mode 1)
+
+;; (require 'text-glow)
+;; (text-glow-mode 1)
+
+;; (require 'bracket-lightning)
+;; (bracket-lightning-mode 1)
+
+;; ...
+```
+
 # Example
 
 <https://github.com/user-attachments/assets/7a3b9f8d-2605-4894-93e2-5232e955917c>

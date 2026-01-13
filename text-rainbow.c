@@ -49,8 +49,6 @@ static void hooked_CGContextShowGlyphsAtPositions(CGContextRef c, const CGGlyph 
   if (glow_enabled && c) {
     CGContextSaveGState(c);
 
-    CGSize offset = CGSizeMake(0, 0);
-
     for (size_t i = 0; i < count; i++) {
       CGColorRef rainbow_color = create_rainbow_color(positions[i].x);
       CGContextSetFillColorWithColor(c, rainbow_color);
