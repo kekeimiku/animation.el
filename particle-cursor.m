@@ -98,7 +98,7 @@ __attribute__((used, visibility("default"))) int emacs_module_init(struct emacs_
   emacs_env *env = runtime->get_environment(runtime);
   emacs_value function = env->make_function(env, 7, 7, particle_cursor_emacs, R"(Emit particle effect at cursor position)", NULL);
   emacs_value symbol = env->intern(env, "particle-cursor");
-  emacs_value args[] = {symbol, function};
+  emacs_value args[] = { symbol, function };
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 
   return 0;

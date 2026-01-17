@@ -110,13 +110,15 @@ __attribute__((used, visibility("default"))) int emacs_module_init(struct emacs_
   emacs_value defalias = env->intern(env, "defalias");
 
   emacs_value render_args[] = {
-      env->intern(env, "text-rainbow-render"),
-      env->make_function(env, 0, 0, text_glow_render_emacs, R"(Render text rainbow effect.)", NULL)};
+    env->intern(env, "text-rainbow-render"),
+    env->make_function(env, 0, 0, text_glow_render_emacs, R"(Render text rainbow effect.)", NULL)
+  };
   env->funcall(env, defalias, 2, render_args);
 
   emacs_value cleanup_args[] = {
-      env->intern(env, "text-rainbow-cleanup"),
-      env->make_function(env, 0, 0, text_glow_cleanup_emacs, R"(Stop text rainbow effect.)", NULL)};
+    env->intern(env, "text-rainbow-cleanup"),
+    env->make_function(env, 0, 0, text_glow_cleanup_emacs, R"(Stop text rainbow effect.)", NULL)
+  };
   env->funcall(env, defalias, 2, cleanup_args);
 
   return 0;

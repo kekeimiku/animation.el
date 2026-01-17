@@ -168,13 +168,15 @@ __attribute__((used, visibility("default"))) int emacs_module_init(struct emacs_
   emacs_value defalias = env->intern(env, "defalias");
 
   emacs_value load_args[] = {
-      env->intern(env, "metal-loader-load"),
-      env->make_function(env, 1, 1, load_filter, "Load and start Metal filter. Args: METALLIB-PATH", NULL)};
+    env->intern(env, "metal-loader-load"),
+    env->make_function(env, 1, 1, load_filter, "Load and start Metal filter. Args: METALLIB-PATH", NULL)
+  };
   env->funcall(env, defalias, 2, load_args);
 
   emacs_value stop_args[] = {
-      env->intern(env, "metal-loader-stop"),
-      env->make_function(env, 0, 0, stop_filter, "Stop Metal filter", NULL)};
+    env->intern(env, "metal-loader-stop"),
+    env->make_function(env, 0, 0, stop_filter, "Stop Metal filter", NULL)
+  };
   env->funcall(env, defalias, 2, stop_args);
 
   return 0;

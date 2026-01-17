@@ -56,7 +56,7 @@ __attribute__((used, visibility("default"))) int emacs_module_init(struct emacs_
   emacs_env *env = runtime->get_environment(runtime);
   emacs_value function = env->make_function(env, 2, 2, buffer_transition_emacs, R"(Apply transition animation to current buffer view.)", NULL);
   emacs_value symbol = env->intern(env, "buffer-transition");
-  emacs_value args[] = {symbol, function};
+  emacs_value args[] = { symbol, function };
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 
   return 0;

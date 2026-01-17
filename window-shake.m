@@ -54,7 +54,7 @@ __attribute__((used, visibility("default"))) int emacs_module_init(struct emacs_
 
   emacs_value function = env->make_function(env, 2, 2, window_shake_emacs, R"(Shake window with given intensity and duration.)", NULL);
   emacs_value symbol = env->intern(env, "window-shake");
-  emacs_value args[] = {symbol, function};
+  emacs_value args[] = { symbol, function };
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 
   return 0;
