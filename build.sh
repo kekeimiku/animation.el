@@ -7,6 +7,7 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    -Wl,-x \
     particle-cursor.m \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
@@ -18,6 +19,7 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    -Wl,-x \
     buffer-transition.m \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
@@ -29,6 +31,7 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    -Wl,-x \
     ripple-click.m \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
@@ -40,6 +43,7 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    -Wl,-x \
     window-shake.m \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
@@ -51,6 +55,7 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    -Wl,-x \
     draw-lightning.m \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
@@ -61,6 +66,7 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    -Wl,-x \
     fishhook.c text-glow.c \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework CoreGraphics \
@@ -70,6 +76,7 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    -Wl,-x \
     fishhook.c text-rainbow.c \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework CoreGraphics \
@@ -80,6 +87,7 @@ clang -shared \
     -O3 \
     -flto \
     -fvisibility=hidden \
+    -Wl,-x \
     metal-loader.m \
     -I/Applications/Emacs.app/Contents/Resources/include \
     -framework AppKit \
